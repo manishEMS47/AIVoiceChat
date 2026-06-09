@@ -1,11 +1,9 @@
 from openai import OpenAI
 import pyaudio, wave, keyboard, faster_whisper, torch.cuda, os
-from elevenlabs.client import ElevenLabs
-from elevenlabs import stream
+from tts_providers import speak
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-openai_client = OpenAI(api_key="your_openai_key")
-elevenlabs_client = ElevenLabs(api_key="your_elevenlabs_key")
+openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your_openai_key"))
 
 system_prompt = {
     'role': 'system', 
@@ -49,5 +47,5 @@ while True:
 
     # Generate and stream output
     generator = generate([system_prompt] + history[-10:])
-    stream(elevenlabs_client.generate(text=generator, voice="Nicole", model="eleven_monolingual_v1", stream=True))
+    speak(generator)
     history.append({'role': 'assistant', 'content': answer})

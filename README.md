@@ -15,16 +15,47 @@ Uses faster_whisper and elevenlabs input streaming for low latency responses to 
 
 ### 1. API Keys:
 
-Replace `your_openai_key` and `your_elevenlabs_key` with your OpenAI and ElevenLabs API key values in the code.
+Set your keys as environment variables (recommended) or replace the placeholders in `tts_providers.py`:
+
+```bash
+# OpenAI (used by both scripts)
+setx OPENAI_API_KEY "sk-..."
+
+# ElevenLabs (default TTS backend)
+setx ELEVENLABS_API_KEY "..."
+
+# 60db (alternative TTS backend)
+setx SIXTYDB_API_KEY "..."
+```
 
 ### 2. Dependencies:
 
 Install the required Python libraries:
 ```bash
-pip install openai elevenlabs pyaudio wave keyboard faster_whisper numpy torch 
+pip install -r requirements.txt
+```
+(or `pip install openai elevenlabs pyaudio wave keyboard faster_whisper numpy torch websocket-client requests`)
+
+### 3. Choose a TTS backend (ElevenLabs or 60db):
+
+Text-to-speech is provider-switchable via `TTS_PROVIDER` (default: `elevenlabs`). Both
+backends stream the GPT reply into the synthesizer token-by-token, so audio starts
+before the full reply is generated — behavior is consistent across providers.
+
+```bash
+setx TTS_PROVIDER "elevenlabs"   # ElevenLabs (voice via ELEVENLABS_VOICE, default "Nicole")
+setx TTS_PROVIDER "60db"         # 60db WebSocket TTS (voice via SIXTYDB_VOICE_ID)
 ```
 
-### 3. Run the Script:
+To find your 60db `voice_id` values:
+```bash
+python list_60db_voices.py
+```
+
+All backend settings (voice, model, speed, stability, similarity, sample rate) can be
+configured at the top of `tts_providers.py` or via the matching environment variables.
+
+### 4. Run the Script:
 
 Execute the main script based on your mode preference:
 

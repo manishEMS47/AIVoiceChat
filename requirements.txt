@@ -1,0 +1,10 @@
+openai
+elevenlabs
+pyaudio
+wave
+keyboard
+faster_whisper
+numpy
+torch
+websocket-client
+requests
